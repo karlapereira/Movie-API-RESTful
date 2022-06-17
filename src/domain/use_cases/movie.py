@@ -1,7 +1,6 @@
 import pandas as pd
 
 from application.responses import ResponseCodes, ResponseFailure, ResponseSuccess, ResponseTypes
-from application.schemas.movie_schema import MovieSchema
 from application.schemas.producer_schema import ProducerSchema
 from src.domain.normalize.normalize import Normalize
 from repository.movies import  queries
