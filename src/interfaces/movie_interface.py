@@ -10,3 +10,9 @@ class MovieInterface:
 
     def insert_csv_into_database(self, csv):
         return self._movie.insert_csv_into_database(csv)
+
+    def get_intervals_winner_producers(self):
+        return self._movie.get_range_intervals_winner_producers()
+
+    def get_all_movies(self):
+        return self._movie.get_all_movies()

@@ -17,38 +17,45 @@ def create_movie_table():
     return DbConnectionInterface().execute(sql)
 
 
-def insert_rows_into_movie_table(rows):
+def get_all_movies():
     sql = """
-        INSERT INTO movies
-            (year, title, title, studios, producers, winner)
-        VALUES
-            %(data)s
+        SELECT 
+            year,
+            title,
+            studios,
+            producers,
+            winner
+            FROM movies;
     """
 
-    mapping = {"data": rows}
-
-    return DbConnectionInterface().fetch_all(sql, mapping)
+    return DbConnectionInterface().fetch_all(sql)
 
 
-def get_producer_with_max_range_winner():
+def get_producers_with_mult_winner_movies():
     sql = """
+        SELECT M.producers FROM (
+            SELECT COUNT(*) as winner_qtd, producers
+                FROM movies
+                WHERE winner="yes"
+                GROUP BY producers
+        ) M WHERE M.winner_qtd >= 2;
     """
-    pass
+
+    return DbConnectionInterface().fetch_all(sql)
 
 
-def get_producer_with_more_fast_winner():
+def get_winner_movies_of_producers(winner_movies_producers):
     sql = """
+        SELECT 
+            m.producers,
+            m.year
+        FROM movies m
+        WHERE m.producers IN ({}) 
+            AND m.winner="yes"
+        ORDER BY m.year ASC;
     """
-    pass
+    where_in_clause = ", ".join(["?"]*len(winner_movies_producers))
 
+    sql = sql.format(where_in_clause)
 
-def get_producer_with_min_range_winner():
-    sql = """
-    """
-    pass
-
-
-def get_producer_with_more_slow_winner():
-    sql = """
-    """
-    pass
+    return DbConnectionInterface().fetch_all(sql, winner_movies_producers)

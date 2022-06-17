@@ -1,8 +1,7 @@
 from flask import Flask, Blueprint, g
 from flask_restx import Api
+
 from repository.db_connection import DbConnection
-# from ma import ma
-# from db import db
 from repository.movies import queries
 
 
