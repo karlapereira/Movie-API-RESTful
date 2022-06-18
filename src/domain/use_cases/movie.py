@@ -76,25 +76,50 @@ class Movie:
             if movie[0] not in interval_winner_movies:
                 interval_winner_movies[movie[0]] = {
                     "producer": movie[0],
-                    "interval": -1,
+                    "min_interval": -1,
+                    "max_interval":-1,
                     "previousWin": -1,
                     "followingWin": -1,
-                    "movie_years": []
+                    "movie_years": [],
+                    "winner_movies_intervals": {}
                 }
-            interval_winner_movies[movie[0]]["movie_years"].append(movie[1])
+            interval_winner_movies[movie[0]]["movie_years"].append(
+                movie[1]
+            )
 
         if interval_winner_movies:
             for producer in interval_winner_movies:
                 for movie_year in interval_winner_movies[producer]["movie_years"]:
                     producer_dict = interval_winner_movies[producer]
-                    if producer_dict["interval"] == -1:
+                    if producer_dict["min_interval"] == -1 and producer_dict["max_interval"] == -1:
                         producer_dict["previousWin"] = movie_year
-                        producer_dict["followingWin"] = movie_year
-                        producer_dict["interval"] = 0
+                        producer_dict["followingWin"] = -1
+                        producer_dict["min_interval"] = 0
+                        producer_dict["max_interval"] = 0
                         continue
 
                     producer_dict["followingWin"] = movie_year
-                    producer_dict["interval"] = producer_dict["followingWin"] - producer_dict["previousWin"]
+                    producer_interval = producer_dict["followingWin"] - producer_dict["previousWin"]
+
+                    if not producer_interval in producer_dict["winner_movies_intervals"]:
+                        producer_dict["winner_movies_intervals"][producer_interval] = []
+                    
+                    producer_dict["winner_movies_intervals"][producer_interval].append(
+                        {
+                            "producer": producer,
+                            "interval": producer_interval,
+                            "previousWin": producer_dict["previousWin"],
+                            "followingWin": producer_dict["followingWin"]
+                        }
+                    )
+                    
+                    if producer_interval > producer_dict["max_interval"] or producer_dict["max_interval"] == 0:
+                        producer_dict["max_interval"] = producer_interval
+
+                    if producer_interval < producer_dict["min_interval"] or producer_dict["min_interval"] == 0:
+                        producer_dict["min_interval"] = producer_interval
+
+                    producer_dict["previousWin"] = movie_year
 
         return interval_winner_movies
 
@@ -105,17 +130,16 @@ class Movie:
         for producer in interval_winner_movies:
             producer_dict = interval_winner_movies[producer]
             if not max_interval:
-                max_interval = producer_dict["interval"]
+                max_interval = producer_dict["max_interval"]
                 continue
 
-            if producer_dict["interval"] > max_interval:
-                max_interval = producer_dict["interval"]
+            if producer_dict["max_interval"] > max_interval:
+                max_interval = producer_dict["max_interval"]
 
         if max_interval:
             for producer in interval_winner_movies:
-                if interval_winner_movies[producer]["interval"] == max_interval:
-                    producer = ProducerSchema().dump(interval_winner_movies[producer])
-                    max_range_winner_producer.append(producer)
+                if max_interval in interval_winner_movies[producer]["winner_movies_intervals"]:
+                    max_range_winner_producer += interval_winner_movies[producer]["winner_movies_intervals"][max_interval]
 
         return max_range_winner_producer
 
@@ -126,16 +150,15 @@ class Movie:
         for producer in interval_winner_movies:
             producer_dict = interval_winner_movies[producer]
             if not min_interval:
-                min_interval = producer_dict["interval"]
+                min_interval = producer_dict["min_interval"]
                 continue
 
-            if producer_dict["interval"] < min_interval:
-                min_interval = producer_dict["interval"]
+            if producer_dict["min_interval"] < min_interval:
+                min_interval = producer_dict["min_interval"]
 
         if min_interval:
             for producer in interval_winner_movies:
-                if interval_winner_movies[producer]["interval"] == min_interval:
-                    producer = ProducerSchema().dump(interval_winner_movies[producer])
-                    min_range_winner_producer.append(producer)
+                if min_interval in interval_winner_movies[producer]["winner_movies_intervals"]:
+                    min_range_winner_producer += interval_winner_movies[producer]["winner_movies_intervals"][min_interval]
 
         return min_range_winner_producer

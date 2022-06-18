@@ -47,6 +47,12 @@ server = Server()
 application = server.app
 
 
+@application.before_first_request
+def create_table_movie_if_not_exists():
+    open_db_connection()
+    queries.create_movie_table()
+
+
 @application.before_request
 def open_db_connection():
     g.db = DbConnection().connect()
