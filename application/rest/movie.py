@@ -38,13 +38,21 @@ class Movie(Resource):
         if not request:
             pass
         try:
-            data = request.files[DATABASE_CSV]
-            response = MovieInterface().insert_csv_into_database(data)
+            if DATABASE_CSV in request.files:
+                data = request.files[DATABASE_CSV]
+                if data.mimetype == "text/csv":
+                    response = MovieInterface().insert_csv_into_database(data)
 
+                    return Response(
+                        json.dumps(response.value["response"]),
+                        mimetype=mimetype,
+                        status=response.value["status_code"]
+                    )
+        
             return Response(
-                json.dumps(response.value["response"]),
+                '{"Message": "Param required file .csv with key: database_csv"}',
                 mimetype=mimetype,
-                status=response.value["status_code"]
+                status=ResponseCodes.PARAMETERS_ERROR
             )
 
         except Exception as exc:
