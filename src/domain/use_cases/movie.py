@@ -1,6 +1,7 @@
 import pandas as pd
 
 from application.responses import ResponseCodes, ResponseFailure, ResponseSuccess, ResponseTypes
+from constants import MAX_RANGE, MIN_RANGE
 from src.domain.normalize.normalize import Normalize
 from repository.movies import  queries
 from src.interfaces.db_connection_interface import DbConnectionInterface
@@ -75,7 +76,6 @@ class Movie:
             if movie[0] not in interval_winner_movies:
                 interval_winner_movies[movie[0]] = {
                     "producer": movie[0],
-                    "min_interval": -1,
                     "max_interval":-1,
                     "previousWin": -1,
                     "followingWin": -1,
@@ -90,10 +90,9 @@ class Movie:
             for producer in interval_winner_movies:
                 for movie_year in interval_winner_movies[producer]["movie_years"]:
                     producer_dict = interval_winner_movies[producer]
-                    if producer_dict["min_interval"] == -1 and producer_dict["max_interval"] == -1:
+                    if producer_dict["max_interval"] == -1:
                         producer_dict["previousWin"] = movie_year
                         producer_dict["followingWin"] = -1
-                        producer_dict["min_interval"] = 0
                         producer_dict["max_interval"] = 0
                         continue
 
@@ -112,11 +111,8 @@ class Movie:
                         }
                     )
                     
-                    if producer_interval > producer_dict["max_interval"] or producer_dict["max_interval"] == 0:
+                    if producer_dict["max_interval"] <= producer_interval <= MAX_RANGE  or producer_dict["max_interval"] == 0:
                         producer_dict["max_interval"] = producer_interval
-
-                    if producer_interval < producer_dict["min_interval"] or producer_dict["min_interval"] == 0:
-                        producer_dict["min_interval"] = producer_interval
 
                     producer_dict["previousWin"] = movie_year
 
@@ -143,22 +139,11 @@ class Movie:
         return max_range_winner_producer
 
     def get_min_range_winner_producers(self, interval_winner_movies):
-        min_interval = None
         min_range_winner_producer = []
 
         for producer in interval_winner_movies:
-            producer_dict = interval_winner_movies[producer]
-            if not min_interval:
-                min_interval = producer_dict["min_interval"]
-                continue
-
-            if producer_dict["min_interval"] < min_interval:
-                min_interval = producer_dict["min_interval"]
-
-        if min_interval:
-            for producer in interval_winner_movies:
-                if min_interval in interval_winner_movies[producer]["winner_movies_intervals"]:
-                    min_range_winner_producer += interval_winner_movies[producer]["winner_movies_intervals"][min_interval]
+            if MIN_RANGE in interval_winner_movies[producer]["winner_movies_intervals"]:
+                min_range_winner_producer += interval_winner_movies[producer]["winner_movies_intervals"][MIN_RANGE]
 
         return min_range_winner_producer
 
