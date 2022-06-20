@@ -113,3 +113,7 @@ Require: form-data with key "database_csv"
     ]
 }
 ```
+
+## POSTMAN Collection
+[Movie API.postman_collection.json.zip](https://github.com/karlapereira/Movie-API-RESTful/files/8940290/Movie.API.postman_collection.json.zip)
+
