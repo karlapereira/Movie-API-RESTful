@@ -53,36 +53,13 @@ host=0.0.0.0 (localhost)
 ## - Docs
 url = {HOST}:{PORT}/api/docs
 
-## - Movies
+## - Movie Route
 url = {HOST}:{PORT}/api/movies
 
 [Method POST] - Load a file.csv into database
 
 Require: form-data with key "database_csv"
 
-[Method GET] - With query_param "producers_range_winner" = True
-
-Description: Return min and max range intervals of movie producers
-```
-{
-    "min": [
-        {
-            "previousWin": 1984,
-            "interval": 6,
-            "producer": "Bo Derek",
-            "followingWin": 1990
-        }
-    ],
-    "max": [
-        {
-            "previousWin": 1984,
-            "interval": 6,
-            "producer": "Bo Derek",
-            "followingWin": 1990
-        }
-    ]
-}
-```
 
 [Method GET] - Return all movies in database
 ```
@@ -109,5 +86,30 @@ Description: Return min and max range intervals of movie producers
             "producers": "Steve Shagan",
             "winner": null
         }
+}
+```
+
+[Method DELETE] - Delete all data from movies table
+
+## - Award Range Route
+[Method GET] - Return min and max range intervals of movie producers
+```
+{
+    "min": [
+        {
+            "previousWin": 1984,
+            "interval": 6,
+            "producer": "Bo Derek",
+            "followingWin": 1990
+        }
+    ],
+    "max": [
+        {
+            "previousWin": 1984,
+            "interval": 6,
+            "producer": "Bo Derek",
+            "followingWin": 1990
+        }
+    ]
 }
 ```
