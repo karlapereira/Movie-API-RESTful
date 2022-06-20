@@ -3,6 +3,7 @@ class ResponseTypes:
     RESOURCE_ERROR = "ResourceError"
     SYSTEM_ERROR = "SystemError"
     SUCCESS = "Success"
+    CREATED = "Created"
     NOT_FOUND = "NOT_FOUND"
     BAD_REQUEST = "BadRequest"
     INTERNAL_CONFIGURATION_ERROR = "SYSTEM_INTERNAL_CONFIGURATION_ERROR"
@@ -15,6 +16,7 @@ class ResponseTypes:
 
 class ResponseCodes:
     SUCCESS = 200
+    CREATED = 201
     PARAMETERS_ERROR = 400
     BAD_REQUEST = 400
     NOT_FOUND = 404

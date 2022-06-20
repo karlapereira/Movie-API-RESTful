@@ -1,7 +1,6 @@
 import pandas as pd
 
 from application.responses import ResponseCodes, ResponseFailure, ResponseSuccess, ResponseTypes
-from application.schemas.producer_schema import ProducerSchema
 from src.domain.normalize.normalize import Normalize
 from repository.movies import  queries
 from src.interfaces.db_connection_interface import DbConnectionInterface
@@ -16,7 +15,7 @@ class Movie:
             result = df.to_sql("movies", self.db_connection, if_exists='append', index=False)
             return ResponseSuccess(
                 {"message": f"Success: CSV load into database. Inserted {result} new data."},
-                ResponseCodes.SUCCESS
+                ResponseCodes.CREATED
             )
         except Exception as exc:
             return ResponseFailure(
@@ -162,3 +161,10 @@ class Movie:
                     min_range_winner_producer += interval_winner_movies[producer]["winner_movies_intervals"][min_interval]
 
         return min_range_winner_producer
+
+    def delete_all_movies(self):
+        queries.delete_all_movies()
+        return ResponseSuccess(
+            {"message": "data from movies table was deleted!"},
+            ResponseCodes.SUCCESS
+        )

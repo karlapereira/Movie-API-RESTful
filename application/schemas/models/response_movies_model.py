@@ -3,8 +3,8 @@ from flask_restx import fields
 from application.server.instance import server
 
 
-response_movies = server.api.model(
-    "Movies",
+movie = server.api.model(
+    "Movie",
     {
         "year": fields.String(required=True, max_length=4, default=""),
         "title": fields.String(required=True),
@@ -12,6 +12,13 @@ response_movies = server.api.model(
         "producers": fields.String(required=True),
         "winner": fields.String(required=True, default=""),
     },
+)
+
+response_movies = server.api.model(
+    "Movies",
+    {
+        "movies": fields.List(fields.Nested(movie))
+    }
 )
 
 movie_range_by_producer = server.api.model(

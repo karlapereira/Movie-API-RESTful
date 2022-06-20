@@ -24,6 +24,7 @@ class Server(object):
 
         # namespaces
         self.movie = self.movie()
+        self.award_range = self.award_range()
 
         self.app.register_blueprint(self.blueprint)
 
@@ -32,6 +33,13 @@ class Server(object):
         return self.api.namespace(
             name='Movies', 
             description='Route for movies', 
+            path='/'
+        )
+
+    def award_range(self, ):
+        return self.api.namespace(
+            name='Award Range', 
+            description='Route for award range', 
             path='/'
         )
 

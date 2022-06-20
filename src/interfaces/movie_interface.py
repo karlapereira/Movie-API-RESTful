@@ -16,3 +16,6 @@ class MovieInterface:
 
     def get_all_movies(self):
         return self._movie.get_all_movies()
+
+    def delete_all_movies(self):
+        return self._movie.delete_all_movies()

@@ -57,3 +57,11 @@ def get_winner_movies_of_producers(winner_movies_producers):
     sql = sql.format(where_in_clause)
 
     return DbConnectionInterface().fetch_all(sql, winner_movies_producers)
+
+
+def delete_all_movies():
+    sql = """
+        DELETE FROM movies;
+    """
+
+    return DbConnectionInterface().execute(sql)

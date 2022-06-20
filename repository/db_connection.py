@@ -26,6 +26,7 @@ class DbConnection(metaclass=DbSingleton):
     def execute(self, sql, mapping={}):
         cur = self.con.cursor()
         cur.execute(sql, mapping)
+        self.con.commit()
 
     def fetch_all(self, sql, mapping={}):
         cur = self.con.cursor()
